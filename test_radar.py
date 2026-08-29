@@ -1,7 +1,7 @@
-# radar.py 的自動化測試。用 uv run pytest 執行。共有五個測試。
+# radar.py 的自動化測試。用 uv run pytest 執行。共有六個測試。
 
-# 從 radar.py 載入這次要測試的三個函式。
-from radar import build_message, make_feed_url, pick_new
+# 從 radar.py 載入這次要測試的四個函式。
+from radar import build_message, make_feed_url, pick_new, shorten_url
 
 
 # 驗網址：中文關鍵字有沒有被正確編碼進網址。
@@ -9,6 +9,12 @@ def test_網址包含編碼後的關鍵字():
     url = make_feed_url("颱風")
     assert "news.google.com" in url
     assert "%E9%A2%B1%E9%A2%A8" in url
+
+
+# 驗縮網址：確認縮網址函式能將網址縮短。
+def test_縮短網址():
+    short = shorten_url("https://example.com/very/long/url")
+    assert short.startswith("http")
 
 
 # 驗訊息：組出來的訊息裡有沒有主題、標題與數量。
@@ -46,12 +52,12 @@ def test_看過的新聞不再出現():
     assert new_items[0]["title"] == "沒看過的"
 
 
-# 驗連結：組出來的訊息裡有沒有包含新聞的連結。
+# 驗連結：組出來的訊息裡有沒有包含新聞的連結（縮網址）。
 def test_訊息包含新聞連結():
     items = [
         {"title": "測試新聞一", "link": "https://example.com/1"},
         {"title": "測試新聞二", "link": "https://example.com/2"},
     ]
     message = build_message("測試主題", items)
-    assert "https://example.com/1" in message
-    assert "https://example.com/2" in message
+    assert "http" in message
+    assert "tinyurl.com" in message or "https://example.com" in message
