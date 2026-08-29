@@ -6,7 +6,7 @@ from radar import build_message, make_feed_url, pick_new
 
 # 驗網址：中文關鍵字有沒有被正確編碼進網址。
 def test_網址包含編碼後的關鍵字():
-    url = make_feed_url("ETF")
+    url = make_feed_url("颱風")
     assert "news.google.com" in url
     assert "%E9%A2%B1%E9%A2%A8" in url
 
