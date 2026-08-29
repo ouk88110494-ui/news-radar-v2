@@ -4,14 +4,13 @@
 import json
 import os
 import urllib.parse
-import urllib.request
 import xml.etree.ElementTree as ET
 
 # 你關注的主題。換成上週選定的那個。
 KEYWORD = "國際財經"
 
 # 一則訊息最多列幾條新聞，減少訊息過多。
-MAX_ITEMS = 5
+MAX_ITEMS = 3
 
 # 雷達的記憶檔：看過的新聞連結都記在這裡。
 SEEN_FILE = "seen.json"
@@ -67,7 +66,6 @@ def build_message(keyword, items):
     lines = ["【新聞雷達】「" + keyword + "」有 " + str(len(picked)) + " 則新消息"]
     for item in picked:
         lines.append("・" + item["title"])
-        lines.append(item["link"])
     return "\n".join(lines)
 
 
