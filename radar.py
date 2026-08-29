@@ -41,6 +41,17 @@ def fetch_news(url):
     return items
 
 
+# 縮短網址：利用 TinyURL 免費 API 將長網址縮短，避免訊息過長。
+def shorten_url(long_url):
+    try:
+        api_url = "https://tinyurl.com/api-create.php?url=" + urllib.parse.quote(long_url)
+        req = urllib.request.Request(api_url, headers={"User-Agent": "news-radar/1.0"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.read().decode("utf-8")
+    except Exception:
+        return long_url
+
+
 # 讀出記憶：看過哪些新聞連結。第一次執行時檔案還不存在，就從空的開始。
 def load_seen():
     try:
@@ -67,7 +78,7 @@ def build_message(keyword, items):
     lines = ["【新聞雷達】「" + keyword + "」有 " + str(len(picked)) + " 則新消息"]
     for item in picked:
         lines.append("・" + item["title"])
-        lines.append(item["link"])
+        lines.append(shorten_url(item["link"]))
     return "\n".join(lines)
 
 
